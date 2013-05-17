@@ -1,0 +1,18 @@
+<post>
+    <turtle><![CDATA[
+        @prefix : <http://superiorautomaticdictionary.com/posts/> .
+        @prefix meta: <http://superiorautomaticdictionary.com/meta/> .
+        @prefix dc: <http://purl.org/dc/terms/> .
+        :template a meta:Post ;
+          dc:title "A Template" ;
+          dc:creator meta:me ;
+          dc:issued "2013-05-13"^^xs:date ;
+          meta:beginDate "2013-03-21" ;
+          meta:subEntryOf :superiorautomaticdictionary .
+        ]]></turtle>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <h1>Template</h1>
+        <p>This is a template for a post document</p>
+        <img src="images/template.png"/>
+    </html>
+</post>

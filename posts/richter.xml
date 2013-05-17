@@ -1,0 +1,31 @@
+<post>
+    <turtle><![CDATA[
+        @prefix : <http://superiorautomaticdictionary.com/posts/> .
+        @prefix meta: <http://superiorautomaticdictionary.com/meta/> .
+        @prefix dc: <http://purl.org/dc/terms/> .
+        :richter a meta:Post ;
+          dc:title "Richter" ;
+          dc:creator meta:me ;
+          dc:issued "2013-05-16"^^xs:date ;
+          meta:beginDate "2013-05-15" .
+        ]]></turtle>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <h1>Richter</h1>
+        <p>Richter is the name of this software project.  The name comes from the name for the most prevalent note layout for the ten-hole diatonic harmonica, a triumph of simplicity and compromise between harmonic and melodic structure. http://en.wikipedia.org/wiki/Richter-tuned_harmonica</p>
+        <p>This software demonstrates using the MarkLogic <a>REST</a> API as a storage and service layer, and a separate MarkLogic HTTP server for client-facing display.  The REST layer is used for XML document CRUD as well as <a>SPARQL</a> queries.</p>
+        <p>Once you have Richter up and running, you'll have two application servers on you MarkLogic instance.  The first is the client application, which allow non-authenticated, read-only access to the content.  The other is a REST API instance, which is a kind of MarkLogic database wrapped up with a service layer that provides document update and search capability, as well as an endpoint for resolving SPARQL queries.  The REST instance is protected by HTTP digest authentication.</p>
+        <p>Architecturally, Richter provides a sample of how to program n-tier XQuery applications.  Although people have been doing this for a long time, Richter helps explain this architecture in an XQuery-only world, because existing XQuery developers are not yet accustomed to thinking of the server as either a back-end or a front-end, but rather have made blazingly-fast single-tier apps, which might not translate easily into a multi-tier architecture as is de-facto standard when using other database technologies.</p>
+        <p>Although this project contains files that end up on the REST backend server (and methods to install them) the client consists of only a few things:</p>
+        <ul>
+            <li>index.xqy.  This is the single page of the client application.</li>
+            <li>lib.xqy. This is the grab-all library module that the client uses.</li>
+            <li>images.  I've put images into this directory.  Properly speaking these images do belong to the content of the database, not the application, but as we all know, managing images in a sophisticated way gets pretty involved, and so I've dodged the issue by just serving them from the client directly.</li>
+        </ul>
+        <p>Next steps for Richter:</p>
+        <ul>
+            <li>Get issues in a tracker.</li>
+            <li>Get feedback and clean up the self-contained documentation.</li>
+        </ul>
+        <img src="images/richter.png"/>
+    </html>
+</post>

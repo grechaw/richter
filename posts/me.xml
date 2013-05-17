@@ -1,0 +1,24 @@
+<post>
+    <turtle><![CDATA[
+        @prefix : <http://superiorautomaticdictionary.com/posts/> .
+        @prefix t: <http://superiorautomaticdictionary.com/terms/> .
+        @prefix meta: <http://superiorautomaticdictionary.com/meta/> .
+        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+        @prefix dc: <http://purl.org/dc/terms/> .
+        :me a meta:Post ;
+          dc:creator meta:me ;
+          dc:title "About Me";
+          dc:subject t:biography;
+          dc:issued "2013-05-10"^^xs:date ;
+          meta:beginDate "2013-04-19".
+        meta:me a foaf:Person .
+        ]]></turtle>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <h1>About Me</h1>
+        <img src="images/harms.png"/>
+        <p>Years of life have gone toward learning languages and technical things, how to play various musical instruments, digging into <a>databases</a> and maps and books and data.  I've had the privilege to work with <a>MarkLogic</a> Server for about six years now, first as a customer implementation at O'Reilly Media, and more recently working on the product itself.</p>
+        <p>Technially I'm into content and data, databases of all kinds, <a>RDF</a>, <a>XML</a>, <a>XQuery</a>, and to some degree I'm a Java enthusiast.</p>
+        <p>I've been raising my family in rural Sonoma County for quite some time, but I'm still getting used to the country.  I also keep a few chickens, and share the property with several dozen hummingbirds, the passing deer and fox.</p>
+        <p>At this stage in life I'm a passionate <a>harmonica</a> player.  It's the ultimate geek-out instrument, and is conducive to a commuting lifestyle.</p>
+    </html>
+</post>

@@ -1,0 +1,32 @@
+<post>
+    <turtle><![CDATA[
+        @prefix : <http://superiorautomaticdictionary.com/posts/> .
+        @prefix t: <http://superiorautomaticdictionary.com/terms/> .
+        @prefix meta: <http://superiorautomaticdictionary.com/meta/> .
+        @prefix dc: <http://purl.org/dc/terms/> .
+        @prefix owl: <http://www.w3.org/2002/07/owl#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        :onto a meta:Post ;
+          dc:title "The Ontology" ;
+          dc:creator meta:me ;
+          dc:subject t:ontology ;
+          dc:issued "2013-05-15"^^xs:date ;
+          meta:beginDate "2013-04-07".
+        meta:onto a owl:Ontology .
+        meta:Post a rdfs:Class .
+        meta:beginDate a rdf:Property ;
+          rdfs:domain meta:Post .
+        meta:superEntry a owl:ObjectProperty ;
+          rdfs:label "Super Entry";
+          rdfs:domain meta:Post ;
+          rdfs:range meta:Post .
+        meta:subEntry owl:inverseOf meta:superEntry .
+        ]]></turtle>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <h1>Ontology</h1>
+        <p>Richter provides a crude method for maintaining and navigating metadata.  For someone familiar with RDF, however, it gives you a very quick way to introduce yourself to the new semantic capabilities of MarkLogic.</p>
+        <p>Metadata is maintained in the post payload within a &lt;turtle&gt; element.  Inside this element is CDATA which, when ingested into REST instance, is parsed and transformed into MarkLogic's native triple format.  In this format, the turtle is picked up by the triple index and available instantly for SPARQL queries.</p>
+        <p>In each post, the metadata is transformed into links that will navigate properties of the RDF data, basically by proxying calls to the REST API's /v1/graphs/things endpoint.</p>
+    </html>
+</post>

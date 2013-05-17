@@ -1,0 +1,11 @@
+<search xmlns="http://marklogic.com/appservices/search">
+    <options>
+        <tuples name="articles">
+            <uri/>
+            <range type="xs:string">
+                <element ns="http://www.w3.org/1999/xhtml" name="h1"/>
+            </range>
+        </tuples>
+    </options>
+</search>
+

@@ -1,0 +1,196 @@
+<export><workspace name="setup"><query name="Bootstrap Client App" focus="" active="true" mode="null">xquery version "1.0-ml";
+
+import module namespace admin = "http://marklogic.com/xdmp/admin" 
+          at "/MarkLogic/admin.xqy";
+
+(: Just edit this variable to point to config.ttl :)
+declare variable $path-to-config := "/home/cgreer/third_party_data/sad/config.ttl";
+
+
+declare variable $config := 
+    let $f := xdmp:filesystem-file($path-to-config)
+    return xdmp:turtle($f);
+
+declare function local:get-property($property-name)
+{
+  map:get(sem:sparql-triples("prefix : &lt;http://superiorautomaticdictionary.com/&gt; select ?o where { ?s :"||$property-name||" ?o}", $config), "o")
+};
+
+declare variable $richter-client-name := local:get-property("hasClientName");
+declare variable $richter-client-port :=  xs:unsignedLong(local:get-property("hasClientPort"));
+declare variable $richter-app-home :=  local:get-property("homeDirectory");
+(
+let $config := admin:get-configuration()
+let $config := admin:http-server-create($config, xdmp:group(), $richter-client-name, $richter-app-home, $richter-client-port, 0, xdmp:database("Documents") )
+return admin:save-configuration($config)
+,
+try {
+  xdmp:eval('
+    import module namespace sec="http://marklogic.com/xdmp/security" at 
+    "/MarkLogic/security.xqy";
+    sec:create-user(
+        "richter-app-user",
+        "Application User for SAD",
+        "obscure-password",
+        ("rest-reader", "network-access"), 
+        (),
+        ())',(),
+        &lt;options xmlns="xdmp:eval"&gt;
+            &lt;database&gt;{ xdmp:database("Security") }&lt;/database&gt;
+        &lt;/options&gt;)
+    } catch ($e) { 
+        xdmp:log("Skipping user creation for SAD") 
+    }
+,    
+let $config := admin:get-configuration()
+let $config := admin:appserver-set-default-user($config,
+         admin:appserver-get-id($config, xdmp:group(), $richter-client-name),
+	 xdmp:eval('xquery version "1.0-ml";
+                  import module "http://marklogic.com/xdmp/security" 
+		    at "/MarkLogic/security.xqy"; 
+	          sec:uid-for-name("richter-app-user")', (),  
+	   &lt;options xmlns="xdmp:eval"&gt;
+		 &lt;database&gt;{xdmp:security-database()}&lt;/database&gt;
+	   &lt;/options&gt;))
+let $config := admin:appserver-set-authentication($config,
+      admin:appserver-get-id($config, xdmp:group(), $richter-client-name),
+      "application-level")
+return admin:save-configuration($config)
+)</query><query name="Bootstrap REST Server" focus="" active="true" mode="null">xquery version "1.0-ml";
+
+import module namespace lib = "http://superiorautomaticdictionary.com/lib" at "lib.xqy";
+
+let $_ := lib:configure()
+let $admin-username := lib:get-property("adminUsername")
+let $admin-password := lib:get-property("adminPassword")
+let $rest-port := lib:get-property("hasRESTPort")
+let $rest-name := lib:get-property("hasRESTName")
+let $rest-payload := '{"rest-api":{"name":"'|| $rest-name || '", "port":' || $rest-port || '}}'
+return
+xdmp:http-post(
+"http://localhost:8002/v1/rest-apis",
+&lt;options xmlns="xdmp:http"&gt;
+  &lt;authentication method="digest"&gt;
+  &lt;username&gt;{$admin-username}&lt;/username&gt;
+  &lt;password&gt;{$admin-password}&lt;/password&gt;
+  &lt;/authentication&gt;
+  &lt;headers&gt;
+    &lt;content-type&gt;application/json&lt;/content-type&gt;
+  &lt;/headers&gt;
+  &lt;data&gt;{$rest-payload}&lt;/data&gt;
+&lt;/options&gt;)
+
+</query><query name="Configure REST Database" focus="" active="true" mode="null">xquery version "1.0-ml";
+
+
+import module namespace lib = "http://superiorautomaticdictionary.com/lib" at "lib.xqy";
+
+
+
+import module namespace admin = "http://marklogic.com/xdmp/admin" 
+          at "/MarkLogic/admin.xqy";
+
+declare variable $richter-rest-name := (lib:configure(), lib:get-property("hasRESTName"));
+declare variable $richter-collation := "http://marklogic.com/collation/en/S1/T00BB/AS";
+declare variable $richter-word-lex := admin:database-word-lexicon($richter-collation);
+declare variable $richter-h1-word-lex := admin:database-element-word-lexicon($hns, "h1", $richter-collation);
+declare variable $richter-a-word-lex := admin:database-element-word-lexicon($hns, "a", $richter-collation);
+declare variable $richter-h1-rangespec := admin:database-range-element-index("string", $hns, "h1", $richter-collation, fn:false() );
+declare variable $richter-a-rangespec:= admin:database-range-element-index("string", $hns, "a", $richter-collation, fn:false() );
+
+declare variable $hns :="http://www.w3.org/1999/xhtml"; 
+
+let $config := admin:get-configuration()
+let $dbid := xdmp:database($richter-rest-name)
+
+(: triple index :)
+let $config := admin:database-set-triple-index($config, $dbid, true())
+
+(: uri lexicon :)
+let $config := admin:database-set-uri-lexicon($config, $dbid, true())
+
+(: collection lexicon :)
+let $config := admin:database-set-collection-lexicon($config, $dbid, true())
+
+(: word lexicon :)
+let $config := admin:database-add-word-lexicon($config, $dbid, $richter-word-lex)
+
+(: range index for h1, a - to back values :)
+
+let $config := admin:database-add-range-element-index($config, $dbid, $richter-h1-rangespec)
+let $config := admin:database-add-range-element-index($config, $dbid, $richter-a-rangespec)
+
+(: element word lexicon on a, h1 :)
+let $config := admin:database-add-element-word-lexicon($config, $dbid, $richter-h1-word-lex)
+let $config := admin:database-add-element-word-lexicon($config, $dbid, $richter-a-word-lex)
+  
+ 
+return admin:save-configuration-without-restart($config)
+</query><query name="Install REST API Extensions" focus="" active="true" mode="null">xquery version "1.0-ml";
+
+import module namespace lib = "http://superiorautomaticdictionary.com/lib" at "lib.xqy";
+declare namespace dir = "http://marklogic.com/xdmp/directory";
+
+
+declare variable $richter-home := (lib:configure(), lib:get-property("homeDirectory"));
+declare variable $rest-admin-user := lib:get-property("adminUsername");
+declare variable $rest-admin-password := lib:get-property("adminPassword");
+
+declare function local:load($path, $content-type, $endpoint) {
+  let $options := 
+    &lt;options xmlns="xdmp:http"&gt;
+      &lt;authentication method="digest"&gt;
+        &lt;username&gt;{$rest-admin-user}&lt;/username&gt;
+        &lt;password&gt;{$rest-admin-password}&lt;/password&gt;
+      &lt;/authentication&gt;
+      &lt;headers&gt;
+        &lt;content-type&gt;{$content-type}&lt;/content-type&gt;
+      &lt;/headers&gt;
+    &lt;/options&gt;
+  return lib:do-http("PUT", $endpoint, xdmp:filesystem-file($path), $options)
+};
+  
+
+declare function local:post($path) {
+  let $options := 
+    &lt;options xmlns="xdmp:http"&gt;
+      &lt;authentication method="digest"&gt;
+        &lt;username&gt;{$rest-admin-user}&lt;/username&gt;
+        &lt;password&gt;{$rest-admin-password}&lt;/password&gt;
+      &lt;/authentication&gt;
+      &lt;headers&gt;
+        &lt;content-type&gt;application/xml&lt;/content-type&gt;
+      &lt;/headers&gt;
+    &lt;/options&gt;
+  let $endpoint := "http://localhost:8007/v1/documents?extension=.xml&amp;amp;directory=/posts/&amp;amp;transform=ingest&amp;amp;collection=CURRENT"
+  let $data :=  xdmp:unquote(xdmp:filesystem-file($path))
+  return (xdmp:log(("POST", $path)), lib:do-http("POST", $endpoint, $data, $options))
+};
+
+
+
+(
+(: common routines :)
+local:load($richter-home || "/lib/ext/common.xqy", "application/xquery", "http://localhost:8007/v1/ext/common.xqy"),
+
+(: ingestion transform :)
+local:load($richter-home ||  'lib/transforms/ingest-post.xqy', "application/xquery", "http://localhost:8007/v1/config/transforms/ingest"),
+
+(: output transform :)
+local:load($richter-home || 'lib/transforms/docout.xqy', "application/xquery", "http://localhost:8007/v1/config/transforms/docout"),
+
+(: concordance transform :)
+local:load($richter-home || "lib/transforms/concordance.xqy", "application/xquery", "http://localhost:8007/v1/config/transforms/concordance"),
+
+for $f in xdmp:filesystem-directory($richter-home || "/posts/")/dir:entry
+let $path := $f//dir:pathname/string(.)
+where ends-with($path, ".xml")
+return local:post($path)
+)
+
+
+
+
+
+
+</query></workspace></export>

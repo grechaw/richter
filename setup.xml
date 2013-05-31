@@ -4,7 +4,7 @@ import module namespace admin = "http://marklogic.com/xdmp/admin"
           at "/MarkLogic/admin.xqy";
 
 (: Just edit this variable to point to config.ttl :)
-declare variable $path-to-config := "/home/cgreer/third_party_data/sad/config.ttl";
+declare variable $path-to-config := "/{path-to-richter}/config.ttl";
 
 
 declare variable $config := 

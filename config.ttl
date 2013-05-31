@@ -1,6 +1,6 @@
 @prefix : <http://superiorautomaticdictionary.com/> .
 :application a :RichterInstance ;
-  :homeDirectory "/home/cgreer/third_party_data/sad/";
+  :homeDirectory "/home/cgreer/third_party_data/richter/";
   :adminUsername "admin" ;
   :adminPassword "admin" ;
   :hasRESTPort "8007";

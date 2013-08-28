@@ -18,7 +18,7 @@ xquery version "1.0-ml";
  :)
 
 (:~
- : A transoform library for displaying Richter artifacts as HTML 
+ : A transform library for displaying Richter artifacts as HTML 
  :)
 module namespace docout = "http://marklogic.com/rest-api/transform/docout";
 import module namespace common = "http://superiorautomaticdictionary.com/ext/common" at "/ext/common.xqy";

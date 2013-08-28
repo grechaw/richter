@@ -4,6 +4,7 @@
         @prefix t: <http://superiorautomaticdictionary.com/terms/> .
         @prefix meta: <http://superiorautomaticdictionary.com/meta/> .
         @prefix dc: <http://purl.org/dc/terms/> .
+        @prefix xs: <http://www.w3.org/2001/XMLSchema#> .
         :linking a meta:Post ;
             meta:partOf :dictionary ;
             dc:title "Linking"@en ;

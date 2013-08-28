@@ -5,6 +5,7 @@
         @prefix meta: <http://superiorautomaticdictionary.com/meta/> .
         @prefix foaf: <http://xmlns.com/foaf/0.1/> .
         @prefix dc: <http://purl.org/dc/terms/> .
+        @prefix xs: <http://www.w3.org/2001/XMLSchema#> .
         :me a meta:Post ;
           dc:creator meta:me ;
           dc:title "About Me";

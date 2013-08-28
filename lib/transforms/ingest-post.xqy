@@ -25,6 +25,8 @@ xquery version "1.0-ml";
 module namespace ingest = "http://marklogic.com/rest-api/transform/ingest";
 declare namespace html = "http://www.w3.org/1999/xhtml";
 
+import module namespace sem = "http://marklogic.com/semantics" at "/MarkLogic/semantics.xqy";
+
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
 
 declare function ingest:transform(
@@ -34,7 +36,18 @@ declare function ingest:transform(
 as document-node() {
     let $root := $content/node()
     let $turtle := $root/turtle/string()
-    let $triples := xdmp:turtle($turtle)
+    let $prefixes := "
+        @prefix : <http://superiorautomaticdictionary.com/posts/> .
+        @prefix t: <http://superiorautomaticdictionary.com/terms/> .
+        @prefix meta: <http://superiorautomaticdictionary.com/meta/> .
+        @prefix dc: <http://purl.org/dc/terms/> .
+        @prefix xs: <http://www.w3.org/2001/XMLSchema#> .
+        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+        @prefix owl: <http://www.w3.org/2002/07/owl#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        "
+    let $triples := sem:rdf-parse($prefixes || $turtle, "turtle")
     let $title := $root/html:html/html:h1
     let $clean-collections := 
         xdmp:document-remove-collections(

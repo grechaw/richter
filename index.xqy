@@ -74,7 +74,7 @@ declare function local:html-page(
             then lib:doc($docuri)
             else ( 
                  <h1>What's New</h1>, 
-                 <img src="images/stoetz.png" id="bg"/>, 
+                 <img src="images/stoetz.jpg" id="bg"/>, 
                  lib:latest())
         }
         </div>

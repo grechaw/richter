@@ -79,7 +79,8 @@ declare function lib:do-http($verb, $uri)
 };
 
 (:
- : Privileges this application to do http calls on behalf of user (non-authenticated read-only proxy)
+ : Privileges this application to do http calls 
+ : on behalf of user (non-authenticated read-only proxy)
  :)
 declare function lib:do-http(
 $verb, $uri, $body) {

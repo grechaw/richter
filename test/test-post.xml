@@ -1,0 +1,16 @@
+<post>
+    <turtle><![CDATA[
+        :me a meta:Post ;
+          dc:creator meta:me ;
+          dc:title "Test";
+          dc:subject t:infrastructure;
+          dc:issued "2012-09-10"^^xs:date ;
+          meta:beginDate "2013-04-19".
+        meta:me a foaf:Person .
+        ]]></turtle>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <h1>Test</h1>
+        <img src="/images/harms.jpg"/>
+        <p>This is a <a>test</a>.</p>
+    </html>
+</post>

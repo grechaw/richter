@@ -175,7 +175,7 @@ declare function lib:latest() {
 PREFIX meta: <http://superiorautomaticdictionary.com/meta/>
 select ?title ?pubDate
         where { ?p a meta:Post ; dc:title ?title ; dc:issued ?pubDate .}
-      order by desc(?pubDate)")
+       order by desc(?pubDate)")
     return 
     <ul xmlns="http://www.w3.org/1999/xhtml">
     {

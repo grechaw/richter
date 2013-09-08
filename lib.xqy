@@ -173,7 +173,7 @@ declare function lib:terms() {
 declare function lib:latest() {
     let $articles := lib:do-sparql("PREFIX dc: <http://purl.org/dc/terms/>
 PREFIX meta: <http://superiorautomaticdictionary.com/meta/>
-select ?title ?pubDate
+select ?title ?pubDate from <CURRENT>
         where { ?p a meta:Post ; dc:title ?title ; dc:issued ?pubDate .}
        order by desc(?pubDate)")
     return 

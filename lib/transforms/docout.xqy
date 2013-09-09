@@ -73,7 +73,7 @@ declare function docout:transform(
   $content as document-node()
 ) as document-node() 
 {
-    let $termlist := cts:element-words(xs:QName("html:a"), "a", ("collation="||$common:collation))
+    let $termlist := cts:element-words(xs:QName("html:a"), "a", ("collation="||$common:collation))[not(. = ("a", "of", "the"))]
     let $root := if (node-name($content/node()) eq xs:QName("post"))
                     then $content
                  else $content//search:result

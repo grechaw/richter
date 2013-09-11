@@ -82,7 +82,7 @@ declare function docout:transform(
     let $h1 := encode-for-uri( ($root//html:h1/string(.), "")[1] )
     let $sparql-results := if ($root//sparql)
                            then sem:query-results-serialize(
-                               sem:sparql($root//sparql/text()))
+                               sem:sparql(common:sparql-prefixes() || ' ' || $root//sparql/text()))
                            else <results>"NO SPARQL"</results>
     let $decorated := docout:decorate( $root//html:html)
     return document {

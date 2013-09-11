@@ -39,7 +39,7 @@ declare variable $common:mapping := map:new((
   map:entry("xhtml", "http://www.w3.org/1999/xhtml#"),
   map:entry("xs","http://www.w3.org/2001/XMLSchema#"),
   map:entry("", "http://superiorautomaticdictionary.com/posts/"),
-  map:entry("terms", "http://superiorautomaticdictionary.com/terms/"),
+  map:entry("t", "http://superiorautomaticdictionary.com/terms/"),
   map:entry("meta", "http://superiorautomaticdictionary.com/meta/")));
 
 declare variable $common:collation := "http://marklogic.com/collation/en/S1/T00BB/AS";

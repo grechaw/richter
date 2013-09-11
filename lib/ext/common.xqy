@@ -92,3 +92,15 @@ declare function common:turtle-prefixes() {
         "> . &#10;")
     }(.)
 };
+
+declare function common:sparql-prefixes() {
+    string-join(
+        map:keys($common:mapping) ! function($k) { 
+            concat("prefix ",
+            $k,
+            ": <",
+            map:get($common:mapping, $k),
+            "> &#10;")
+        }(.),
+        "")
+};

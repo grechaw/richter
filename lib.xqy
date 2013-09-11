@@ -107,7 +107,7 @@ $verb, $uri, $body, $options)
 
 declare function lib:do-sparql($sparql) {
     lib:do-http("GET",
-        concat($lib:sparql-uri, "?query=", encode-for-uri($sparql)),
+        concat($lib:sparql-uri, "?query=", encode-for-uri(common:sparql-prefixes() || $sparql)),
         (),
         <options xmlns="xdmp:http">{$auth}<headers><accept>application/sparql-results+xml</accept></headers></options>)[1]
 };
@@ -171,8 +171,7 @@ declare function lib:terms() {
 };
 
 declare function lib:latest() {
-    let $articles := lib:do-sparql("PREFIX dc: <http://purl.org/dc/terms/>
-PREFIX meta: <http://superiorautomaticdictionary.com/meta/>
+    let $articles := lib:do-sparql("
 select ?title ?pubDate from <CURRENT>
         where { ?p a meta:Post ; dc:title ?title ; dc:issued ?pubDate .}
        order by desc(?pubDate)")

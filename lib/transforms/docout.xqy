@@ -25,6 +25,7 @@ import module namespace common = "http://superiorautomaticdictionary.com/ext/com
 
 import module namespace sem = "http://marklogic.com/semantics" at "/MarkLogic/semantics.xqy";
 
+declare namespace results = "http://www.w3.org/2005/sparql-results#";
 declare namespace html="http://www.w3.org/1999/xhtml";
 declare namespace search="http://marklogic.com/appservices/search";
 
@@ -79,6 +80,10 @@ declare function docout:transform(
                  else $content//search:result
     let $triples := $root//sem:triple
     let $h1 := encode-for-uri( ($root//html:h1/string(.), "")[1] )
+    let $sparql-results := if ($root//sparql)
+                           then sem:query-results-serialize(
+                               sem:sparql($root//sparql/text()))
+                           else <results>"NO SPARQL"</results>
     let $decorated := docout:decorate( $root//html:html)
     return document {
         element html:div {
@@ -95,6 +100,25 @@ declare function docout:transform(
                             $cts:text
                          })
                 else ()
+            },
+            element html:div {
+                element html:table {
+                    element html:tr {
+                        for $v in $sparql-results//results:variable/@name/data(.)
+                        return element html:th {
+                            $v
+                        }
+                    },
+                    for $row in $sparql-results//results:result
+                    return element html:tr {
+                        for $binding in $row//results:binding
+                        return element html:td {
+                            if ($binding/results:uri)
+                            then sem:curie-shorten($binding//text(), $common:mapping)
+                            else $binding//text()
+                        }
+                    }
+                }
             },
             common:format-triples($triples, $h1)
         }

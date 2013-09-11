@@ -1,5 +1,7 @@
 xquery version "1.0-ml";
 module namespace test = "http://github.com/robwhitby/xray/test";
+declare namespace results = "http://www.w3.org/2005/sparql-results#";
+
 import module namespace lib = "http://superiorautomaticdictionary.com/lib" at "../lib.xqy";
 import module namespace assert = "http://github.com/robwhitby/xray/assertions" at "/xray/src/assertions.xqy";
 
@@ -54,4 +56,12 @@ declare %test:case function test-terms()
 {
     let $terms := lib:terms()
     return assert:equal($terms, <x/>)
+};
+
+declare %test:case function test-sparql()
+{
+    let $q := lib:do-sparql('select ?title where { :sparql dc:title ?title }')
+    return
+        assert:equal($q//results:literal, 
+            <literal datatype="http://www.w3.org/2001/XMLSchema#string" xmlns="http://www.w3.org/2005/sparql-results#">Stored Queries</literal>)
 };

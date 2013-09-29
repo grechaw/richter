@@ -133,7 +133,7 @@ declare function lib:metadata($rdf-uri as xs:string, $h1)
     let $results := lib:do-http("GET", 
         concat($lib:things-uri, "?iri=", encode-for-uri($rdf-uri)), 
         (),
-        <options xmlns="xdmp:http">{$auth}<headers><accept>text/plain</accept></headers></options>)[1]
+        <options xmlns="xdmp:http">{$auth}<headers></headers></options>)[1]
         let $rdf := <a>{xdmp:nquad($results)}</a>
         return common:format-triples($rdf/*, $h1)
 };
@@ -244,6 +244,24 @@ declare function lib:concordance($term) {
                 <return-query>true</return-query>
             </options>
     </search>)
+};
+
+(: todo amp this :)
+declare function lib:new-post($post) {
+    (: xdmp:securityAssert :)
+    let $options := 
+        <options xmlns="xdmp:http">
+            <authentication method="digest">
+                <username>admin</username>
+                <password>admin</password>
+            </authentication>
+            <headers>
+                <content-type>application/xml</content-type>
+            </headers>
+        </options>
+    let $endpoint := "http://localhost:8007/v1/documents?extension=.xml&amp;directory=/posts/&amp;transform=ingest&amp;collection=CURRENT"
+    let $data :=  $post
+    return lib:do-http("POST", $endpoint, $data, $options)
 };
 
 declare function lib:error($e) {

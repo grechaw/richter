@@ -49,15 +49,20 @@ declare function common:format-triples($triples, $h1)
     element html:div {
         attribute class {"metadata"},
         element html:pre {
-            for $triple in $triples
+            let $subjects := count(distinct-values($triples/sem:subject))
+            for $triple at $index in $triples
             return 
                 let $t := sem:triple($triple)
                 return
                 element html:span {
-                    element html:a {
-                        attribute href { concat("?rdf-uri=", encode-for-uri($triple/sem:subject), "&amp;h1=", $h1) },
-                        text { sem:curie-shorten($triple/sem:subject, $common:mapping) }
-                    },
+                    if ($subjects eq 1 and $index gt 1)
+                    then 
+                        "&nbsp;&nbsp;"
+                    else
+                        element html:a {
+                            attribute href { concat("?rdf-uri=", encode-for-uri($triple/sem:subject), "&amp;h1=", $h1) },
+                            text { sem:curie-shorten($triple/sem:subject, $common:mapping) }
+                        },
                     text {" "},
                     element html:a {
                         attribute href { concat("?rdf-uri=", encode-for-uri($triple/sem:predicate), "&amp;h1=", $h1) },
@@ -75,7 +80,7 @@ declare function common:format-triples($triples, $h1)
                     text { ".  " },
                     element html:a {
                         attribute href { concat("?rdf-uri=", encode-for-uri($triple/sem:subject), "&amp;h1=", encode-for-uri($triple/sem:subject)) },
-                        text { "Find Post->" }
+                        text { "->" }
                     },
                     text {"&#10;" }
                 }

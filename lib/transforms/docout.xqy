@@ -40,7 +40,7 @@ declare function docout:decorate(
     return
         typeswitch($n)
             case element(html:h1)
-                return element html:h1 {
+                return element html:h3 {
                     $n/@*,
                     element html:a {
                         attribute href { "?q=" || encode-for-uri($n/text()/string()) || "&amp;h1=" || $n//text()/string()},
@@ -87,9 +87,7 @@ declare function docout:transform(
     let $decorated := docout:decorate( $root//html:html)
     return document {
         element html:div {
-            attribute class {"article"},
             element html:div {
-                attribute class {"article"},
                 if (exists($decorated))
                 then
                     cts:highlight(

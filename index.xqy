@@ -26,6 +26,8 @@ import module namespace rest = "http://marklogic.com/appservices/rest"
   at "/MarkLogic/appservices/utils/rest.xqy";
 import module namespace lib = "http://superiorautomaticdictionary.com/lib"
   at "lib.xqy";
+import module namespace sem = "http://marklogic.com/semantics" at "/MarkLogic/semantics.xqy";
+import module namespace common = "http://superiorautomaticdictionary.com/ext/common" at "/lib/ext/common.xqy";
 
 declare namespace html="http://www.w3.org/1999/xhtml";
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
@@ -56,56 +58,58 @@ declare function local:html-page(
             <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" ></meta>
             <meta name="keywords" content=""></meta>
             <meta name="description" content=""></meta>
-            <title>Richter</title>
-            <link rel="stylesheet" type="text/css" href="base.css"></link>
+            <title>Media Literacy Forum</title>
+            <link rel="stylesheet" href="stylesheets/base.css"/>
+            <link rel="stylesheet" href="stylesheets/skeleton.css"/>
+            <link rel="stylesheet" href="stylesheets/layout.css"/>
         </head>
         <body>
-            <div id="top">
+            <div class="container">
+                <div class="sixteen columns">
+                    <h1><a href="/">Media Literacy Forum</a></h1>
+                    <p>Blah</p>
+                </div>
 
-                <h1><a href="/">Richter</a></h1>
-                <p>A MarkLogic-backed publishing system for some sort of <a href="?q=dictionary&amp;h1=Richter">dictionary</a> by Charles Greer</p>
-            </div>
-
-        <div id="left">
+            <div class="eight columns alpha">
         {
             if ($title) 
             then lib:doc-title($title) 
             else if ($docuri)
             then lib:doc($docuri)
             else ( 
-                 <h1>What's New</h1>, 
-                 <img src="images/stoetz.jpg" id="bg"/>, 
+                 <h3>What's New</h3>, 
+                 <img src="images/media.jpg" id="bg"/>, 
                  lib:latest())
         }
         </div>
 
 
-        <div id="right">
+        <div class="four columns">
         {
             if ($q)
             then
                 (
-                <h1>Concordance all about "{$q}"</h1>,
-                lib:concordance($q))
-            else if ($rdf-uri)
-            then 
-                ( 
-                <p>Facts about &lt;{$rdf-uri}&gt;</p>, 
-                lib:metadata($rdf-uri, ($title, "")[1])
+                <h3>Hypertext "{$q}"</h3>,
+                lib:concordance($q)
                 )
             else
                 (
-                <p>Metadata about Richter</p>,
-                lib:metadata("http://superiorautomaticdictionary.com/posts/richter", ($title, "")[1]),
-                <p>A list of terms:</p>, 
+                <h3>Terms:</h3>, 
                 lib:terms()
                 )
         }
         </div>
-        <div id="tweet">
-<a href="https://twitter.com/share" class="twitter-share-button" data-count="none" data-hashtags="superiorautomaticdictionary" data-dnt="true">Tweet</a>
-<script>!function(d,s,id){{var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){{js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}}}(document, 'script', 'twitter-wjs');</script>
-</div>
+        <div class="four columns omega">
+        {
+            let $metadata := ($rdf-uri, $title, "Top")[1]
+            return
+            ( 
+                <h3>{sem:curie-shorten(sem:iri($metadata), $common:mapping)}</h3>, 
+                lib:metadata($metadata, ($title, "")[1])
+                )
+        }
+        </div>
+    </div>
     </body>
 </html>
 

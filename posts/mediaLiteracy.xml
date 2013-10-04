@@ -1,35 +1,21 @@
 <post>
     <turtle><![CDATA[
-        :mediaLiteracy a meta:Post ;
-          dc:title "Media Literacy Home" ;
+        :newArticle a meta:Post ;
+          dc:title "New Article Template" ;
           meta:handle "Charles" ;
           dc:issued "2013-09-25"^^xs:date .
         ]]></turtle>
     <html xmlns="http://www.w3.org/1999/xhtml">
-        <h1>Media Literacy</h1>
-            <form method="POST" action="/new-post.xqy">
-                <label for="handle">Handle</label>
-                <br class="clear"/>
-                <input type="text" id="handle" name="handle" />
-                <br class="clear"/>
-                <label for="title">Title</label>
-                <br class="clear"/>
-                <input type="text" id="title" name="title"/>
-                <br class="clear"/>
-                <label for="postbody">Regular Textarea</label>
-                <br class="clear"/>
-                <textarea id="postbody" name="postbody"></textarea>
-                <br class="clear"/>
-                <label for="selectList">Select List</label>
-                <br class="clear"/>
-                <select id="selectList">
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
-                    <option value="Option 3">Option 3</option>
-                    <option value="Option 4">Option 4</option>
-                </select>
-                <br class="clear"/>
-                <button type="submit">Submit Form</button>
-            </form>
+        <h1>New Article</h1>
+        <form method="POST" action="/new-post.xqy">
+            <label for="handle">Handle</label>
+            <input type="text" id="handle" name="handle" />
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title"/>
+            <label for="postbody">Regular Textarea</label>
+            <textarea id="postbody" name="postbody"></textarea>
+            <br class="clear"/>
+            <button type="submit">Submit Form</button>
+        </form>
     </html>
 </post>

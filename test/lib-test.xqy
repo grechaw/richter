@@ -65,3 +65,15 @@ declare %test:case function test-sparql()
         assert:equal($q//results:literal, 
             <literal datatype="http://www.w3.org/2001/XMLSchema#string" xmlns="http://www.w3.org/2005/sparql-results#">Stored Queries</literal>)
 };
+
+declare %test:case function test-new-post()
+{
+    (: fail :)
+    assert:equal(1, 2)
+};
+
+declare %test:case function test-reply()
+{
+    let $reply-link := lib:reply-link("TITLE")
+    return assert:equal($reply-link, "TITLE-Reply-1")
+};

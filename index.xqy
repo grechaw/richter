@@ -37,9 +37,10 @@ declare option xdmp:mapping "false";
 declare function local:app-rule() {
     <rest:request user-params="allow">
         <rest:param name="q" required="false"/>
-        <rest:param name="h1" required="false"/>
+        <rest:param name="title" required="false"/>
         <rest:param name="doc" required="false"/>
         <rest:param name="metadata" required="false"/>
+        <rest:param name="reply-to" required="false"/>
         <rest:http method="GET"/>
     </rest:request>
 };
@@ -49,16 +50,17 @@ declare function local:html-page(
 ) as element(html:html)
 {
     let $q := map:get($params, "q")
-    let $title := map:get($params, "h1")
+    let $title := map:get($params, "title")
     let $docuri := map:get($params, "doc")
     let $rdf-uri := map:get($params, "rdf-uri")
+    let $reply-to := map:get($params, "reply-to")
     return
     <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" ></meta>
             <meta name="keywords" content=""></meta>
             <meta name="description" content=""></meta>
-            <title>Media Literacy Forum</title>
+            <title>Media Literacy</title>
             <link rel="stylesheet" href="stylesheets/base.css"/>
             <link rel="stylesheet" href="stylesheets/skeleton.css"/>
             <link rel="stylesheet" href="stylesheets/layout.css"/>
@@ -66,14 +68,14 @@ declare function local:html-page(
         <body>
             <div class="container">
                 <div class="sixteen columns">
-                    <h1><a href="/">Media Literacy Forum</a></h1>
-                    <p>Blah</p>
+                    <h1><a href="/">Forum of Harmonicatude</a></h1>
+                    <p>Here is where we discuss and record harmonica stuff.</p>
                 </div>
 
-            <div class="eight columns alpha">
+            <div class="ten columns alpha">
         {
             if ($title) 
-            then lib:doc-title($title) 
+            then (lib:doc-title($title), <a href="{lib:reply-link($title)}">Reply</a>)
             else if ($docuri)
             then lib:doc($docuri)
             else ( 
@@ -83,8 +85,7 @@ declare function local:html-page(
         }
         </div>
 
-
-        <div class="four columns">
+        <div class="six columns omega">
         {
             if ($q)
             then
@@ -92,21 +93,18 @@ declare function local:html-page(
                 <h3>Hypertext "{$q}"</h3>,
                 lib:concordance($q)
                 )
-            else
-                (
-                <h3>Terms:</h3>, 
-                lib:terms()
-                )
-        }
-        </div>
-        <div class="four columns omega">
-        {
-            let $metadata := ($rdf-uri, $title, "Top")[1]
-            return
-            ( 
-                <h3>{sem:curie-shorten(sem:iri($metadata), $common:mapping)}</h3>, 
-                lib:metadata($metadata, ($title, "")[1])
-                )
+                else 
+                    if ($rdf-uri)
+                    then
+                        (
+                            <h3>{sem:curie-shorten(sem:iri($rdf-uri), $common:mapping)}</h3>, 
+                            lib:metadata($rdf-uri, ($title, "")[1])
+                        )
+                    else
+                        (
+                            <h3>Terms:</h3>, 
+                            lib:terms()
+                        )
         }
         </div>
     </div>

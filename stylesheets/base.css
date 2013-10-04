@@ -267,3 +267,12 @@
 	.add-bottom { margin-bottom: 20px !important; }
 
 
+#bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity:0.2;
+    z-index: -1;
+    min-width: 100%;
+    min-height: 100%;
+}

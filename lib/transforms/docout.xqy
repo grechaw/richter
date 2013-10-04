@@ -31,7 +31,6 @@ declare namespace search="http://marklogic.com/appservices/search";
 
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
 
-
 declare function docout:decorate(
     $nodes as node()*
 ) as node()*
@@ -40,13 +39,14 @@ declare function docout:decorate(
     return
         typeswitch($n)
             case element(html:h1)
-                return element html:h3 {
-                    $n/@*,
-                    element html:a {
-                        attribute href { "?q=" || encode-for-uri($n/text()/string()) || "&amp;h1=" || $n//text()/string()},
-                        docout:decorate($n/node() except $n/@*)
+                return 
+                    element html:h3 {
+                        $n/@*,
+                        element html:a {
+                            attribute href { "?q=" || encode-for-uri($n/text()/string()) || "&amp;h1=" || $n//text()/string()},
+                            docout:decorate($n/node() except $n/@*)
+                        }
                     }
-                }
             case element(html:img)
                 return 
                     if ($n/@id)

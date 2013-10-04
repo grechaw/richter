@@ -273,3 +273,12 @@ declare function lib:error($e) {
         </options>)}
     </pre>
 };
+
+declare function lib:reply-link($title) {
+    let $try := $title || "-r"
+    (: not a great method, but this is prototype stuff :)
+    return
+        if (not(fn:doc-available($try)))
+            then $try
+        else lib:reply-link($try)
+};

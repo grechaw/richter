@@ -112,6 +112,15 @@ declare function lib:do-sparql($sparql) {
         <options xmlns="xdmp:http">{$auth}<headers><accept>application/sparql-results+xml</accept></headers></options>)[1]
 };
 
+declare function lib:do-construct($sparql) {
+    let $response :=
+        lib:do-http("GET",
+        concat($lib:sparql-uri, "?query=", encode-for-uri(common:sparql-prefixes() || $sparql)),
+        (),
+        <options xmlns="xdmp:http">{$auth}<headers><accept>text/turtle</accept></headers></options>)[1]
+     return sem:rdf-parse($response, "turtle") 
+};
+
 declare function lib:configure()
 {
     let $f := xdmp:filesystem-file(xdmp:modules-root() || "config.ttl")
@@ -172,20 +181,33 @@ declare function lib:terms() {
 
 declare function lib:latest() {
     let $articles := lib:do-sparql("
-select ?title ?pubDate from <CURRENT>
-        where { ?p a meta:Post ; dc:title ?title ; dc:issued ?pubDate .}
-       order by desc(?pubDate)")
+     select ?title ?pubDate ?reply ?replyTitle
+        from <CURRENT>
+        where { 
+        ?p a meta:Post ; 
+        dc:title ?title ; 
+        dc:issued ?pubDate .
+        OPTIONAL { 
+        	     ?reply meta:replyToTitle ?replyToTitle ;
+                 dc:title ?replyTitle .
+               filter (?title = ?replyToTitle)}
+        }
+        order by desc(?pubDate)")
     return 
     <ul xmlns="http://www.w3.org/1999/xhtml">
     {
         for $result in $articles//sr:result
         let $title := $result//sr:binding[@name="title"]/sr:literal/string()
         let $pubDate := $result//sr:binding[@name="pubDate"]/sr:literal/string()
+        let $replyTitle := $result//sr:binding[@name="replyTitle"]/sr:literal/string()
         return
             <li>
             <a href="?q={encode-for-uri($title)}&amp;h1={encode-for-uri($title)}">
                 {$pubDate}&nbsp;{$title} 
                 </a>
+                <ul><li><a href="?q={encode-for-uri($replyTitle)}&amp;h1={encode-for-uri($replyTitle)}">
+                    {$replyTitle}
+                </a></li></ul>
             </li>
     }
     </ul>
@@ -260,8 +282,7 @@ declare function lib:new-post($post) {
             </headers>
         </options>
     let $endpoint := "http://localhost:8007/v1/documents?extension=.xml&amp;directory=/posts/&amp;transform=ingest&amp;collection=CURRENT"
-    let $data :=  $post
-    return lib:do-http("POST", $endpoint, $data, $options)
+    return lib:do-http("POST", $endpoint, $post, $options)
 };
 
 declare function lib:error($e) {
@@ -274,11 +295,17 @@ declare function lib:error($e) {
     </pre>
 };
 
-declare function lib:reply-link($title) {
-    let $try := $title || "-r"
-    (: not a great method, but this is prototype stuff :)
-    return
-        if (not(fn:doc-available($try)))
-            then $try
-        else lib:reply-link($try)
+declare function lib:reply-to-template($reply-to) {
+    <form xmlns="http://www.w3.org/1999/xhtml" method="POST" action="/new-post.xqy">
+        <label for="handle">Reply-to</label>
+        <input type="text" id="reply-to" name="reply-to" value="{$reply-to}"/>
+        <label for="handle">Handle</label>
+        <input type="text" id="handle" name="handle" />
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title"/>
+        <label for="postbody">Regular Textarea</label>
+        <textarea id="postbody" name="postbody"></textarea>
+        <br class="clear"/>
+        <button type="submit">Submit Form</button>
+    </form>
 };

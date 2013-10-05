@@ -52,7 +52,7 @@ declare function local:submit-post(
     let $post-body := map:get($params, "postbody")
     let $reply-to := map:get($params, "reply-to")
     let $reply-statement :=
-            if (exists($reply-to)) then (" meta:reply-to " || $reply-to || " ; ") else "" 
+            if (exists($reply-to)) then (' meta:replyToTitle "' || $reply-to || '@en" ; ') else "" 
     let $post-template-turtle :=
         xdmp:unquote(
             "<turtle><![CDATA[ "||
@@ -72,13 +72,14 @@ declare function local:submit-post(
             <p>{xdmp:unquote("<post>" || $surrounded || "</post>")/*/node()}</p>
         </html>
         </post>
-    return lib:new-post($post)
+    return 
+        lib:new-post($post)
 };
 
 let $params := rest:process-request(local:post-rule())
 return
     (
         xdmp:set-response-content-type("text/html"),
-        local:submit-post($params),
-        xdmp:redirect-response("/index.xqy?h1=" || map:get($params, "title"))
+        let $post := local:submit-post($params)
+        return xdmp:redirect-response("/index.xqy?h1=" || map:get($params, "reply-to")) 
     )

@@ -37,7 +37,7 @@ declare option xdmp:mapping "false";
 declare function local:app-rule() {
     <rest:request user-params="allow">
         <rest:param name="q" required="false"/>
-        <rest:param name="title" required="false"/>
+        <rest:param name="h1" required="false"/>
         <rest:param name="doc" required="false"/>
         <rest:param name="metadata" required="false"/>
         <rest:param name="reply-to" required="false"/>
@@ -50,7 +50,7 @@ declare function local:html-page(
 ) as element(html:html)
 {
     let $q := map:get($params, "q")
-    let $title := map:get($params, "title")
+    let $title := map:get($params, "h1")
     let $docuri := map:get($params, "doc")
     let $rdf-uri := map:get($params, "rdf-uri")
     let $reply-to := map:get($params, "reply-to")
@@ -74,8 +74,11 @@ declare function local:html-page(
 
             <div class="ten columns alpha">
         {
+            if ($reply-to)
+            then (lib:reply-to-template($reply-to))
+            else
             if ($title) 
-            then (lib:doc-title($title), <a href="{lib:reply-link($title)}">Reply</a>)
+            then (<a href="?reply-to={$title}">Reply</a>, lib:doc-title($title))
             else if ($docuri)
             then lib:doc($docuri)
             else ( 

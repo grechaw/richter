@@ -1,0 +1,22 @@
+<post>
+    <turtle><![CDATA[
+        :linking a meta:Post ;
+            meta:partOf :dictionary ;
+            dc:title "Linking"@en ;
+            dc:issued "2013-05-14"^^xs:date ;
+            meta:beginDate "2013-05-04";
+            dc:subject t:dictionary ;
+            dc:subject t:marklogic ;
+            meta:subEntryOf :superiorautomaticdictionary ;
+            dc:creator meta:me .
+        :superiorautomaticdictionary meta:superEntryOf :linking .
+        ]]></turtle>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <h1>Linking</h1>
+        <p>The dictionary is <a>linked</a>.</p>
+        <p>Anything you surround in &lt;a&gt; tags will be incorporated into the dictionary as a link.  Not just the term that you surround, but any other place that it exists.  Clicking on a term will enable the concordance for that term.</p>
+        <p>Here is a test.  If I put the phrase "<a>superior automatic dictionary</a>" in this paragraph and post this post, then it should show up in the concordance.  On doc out that should become a link that will activate the concordance for that phrase.  Means that not all occurrences of a term will be auto-clickable, but at least they'll be part of the concordance inventory... hm there's something missing though if we can't have the entire.  As is, all terms are clicable but I'd really like any instance of a search that contains any term to be clickable.  In the meantime another test superior automatic <a>dictionary</a></p>
+        <p>Image credit: Einarspez, Wikimedia http://commons.wikimedia.org/wiki/File:Rostig_kätting.jpg</p>
+        <img src="images/rusty-chain.jpg"/>
+    </html>
+</post>

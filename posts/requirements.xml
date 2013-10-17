@@ -1,0 +1,35 @@
+<post>
+    <turtle><![CDATA[
+        :requirements a meta:Post ;
+          dc:title "Requirements"@en ;
+          dc:creator meta:me ;
+          dc:issued "2013-05-17"^^xs:date ;
+          meta:beginDate "2013-03-20".
+        ]]></turtle>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <h1>Requirements</h1>
+        <img src="images/requirements.jpg"/>
+        <p>This project is intended to be a kind of free-form metadata and hypertext publishing system for personal use.</p>
+        <p>It consists of:</p>
+            <ul>
+                <li>A browsing interface with</li>
+                <ul>
+                    <li>A top-level entry point for posts in reverse chronological order</li>
+                    <li>Highlights for any occurrence of terms that somewhere are marked as a link.</li>
+                    <li>A <a>concordance</a> that lists occurrances of terms throughout the dictionary</li>
+                    <li>Some ability to explore metadata</li>
+                </ul>
+                <li>An out-of-band method for updating posts</li>
+                <li>A very simple bootstrapper</li>
+                <li>An n-tier XQuery architecture</li>
+                <li>An initial set of documents to demonstrate:</li>
+                <ul>
+                    <li>Linking</li>
+                    <li>Concordance</li>
+                    <li>Update workflow</li>
+                    <li>Architecture</li>
+                    <li>Working with MarkLogic n-tier Applications</li>
+                </ul>
+            </ul>
+    </html>
+</post>

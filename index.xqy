@@ -40,7 +40,6 @@ declare function local:app-rule() {
         <rest:param name="h1" required="false"/>
         <rest:param name="doc" required="false"/>
         <rest:param name="metadata" required="false"/>
-        <rest:param name="reply-to" required="false"/>
         <rest:http method="GET"/>
     </rest:request>
 };
@@ -53,14 +52,13 @@ declare function local:html-page(
     let $title := map:get($params, "h1")
     let $docuri := map:get($params, "doc")
     let $rdf-uri := map:get($params, "rdf-uri")
-    let $reply-to := map:get($params, "reply-to")
     return
     <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" ></meta>
             <meta name="keywords" content=""></meta>
             <meta name="description" content=""></meta>
-            <title>Media Literacy</title>
+            <title>Richter</title>
             <link rel="stylesheet" href="stylesheets/base.css"/>
             <link rel="stylesheet" href="stylesheets/skeleton.css"/>
             <link rel="stylesheet" href="stylesheets/layout.css"/>
@@ -68,22 +66,19 @@ declare function local:html-page(
         <body>
             <div class="container">
                 <div class="sixteen columns">
-                    <h1><a href="/">Forum of Harmonicatude</a></h1>
-                    <p>Here is where we discuss and record harmonica stuff.</p>
+                    <h1><a href="/">Richter</a></h1>
+                    <p>A MarkLogic-backed publishing system for some sort of <a href="?q=dictionary&amp;h1=Richter">dictionary</a> by Charles Greer</p>
                 </div>
 
             <div class="ten columns alpha">
         {
-            if ($reply-to)
-            then (lib:reply-to-template($reply-to))
-            else
             if ($title) 
-            then (<a href="?reply-to={$title}">Reply</a>, lib:doc-title($title))
+            then lib:doc-title($title) 
             else if ($docuri)
             then lib:doc($docuri)
             else ( 
                  <h3>What's New</h3>, 
-                 <img src="images/media.jpg" id="bg"/>, 
+                 <img src="images/stoetz.jpg" id="bg"/>, 
                  lib:latest())
         }
         </div>

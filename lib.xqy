@@ -133,8 +133,8 @@ declare function lib:metadata($rdf-uri as xs:string, $h1)
     let $results := lib:do-http("GET", 
         concat($lib:things-uri, "?iri=", encode-for-uri($rdf-uri)), 
         (),
-        <options xmlns="xdmp:http">{$auth}<headers><accept>application/nquads</accept></headers></options>)[1]
-        let $rdf := <a>{xdmp:nquad($results)}</a>
+        <options xmlns="xdmp:http">{$auth}<headers><accept>application/n-quads</accept></headers></options>)[1]
+        let $rdf := <a>{sem:rdf-parse($results,"nquad")}</a>
         return common:format-triples($rdf/*, $h1)
 };
 

@@ -47,7 +47,7 @@ declare variable $common:collation := "http://marklogic.com/collation/en/S1/T00B
 declare function common:format-triples($triples, $h1) 
 {
     element html:div {
-        attribute class {"metadata"},
+        attribute id {"docmeta"},
         element html:pre {
             let $subjects := count(distinct-values($triples/sem:subject))
             for $triple at $index in $triples

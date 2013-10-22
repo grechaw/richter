@@ -88,6 +88,8 @@ declare function docout:transform(
     return document {
         element html:div {
             element html:div {
+                attribute class {"content"},
+                attribute id { "article" },
                 if (exists($decorated))
                 then
                     cts:highlight(
@@ -100,6 +102,7 @@ declare function docout:transform(
                 else ()
             },
             element html:div {
+                attribute id { "sparql" },
                 element html:table {
                     element html:tr {
                         for $v in $sparql-results//results:variable/@name/data(.)
@@ -118,7 +121,11 @@ declare function docout:transform(
                     }
                 }
             },
-            common:format-triples($triples, $h1)
+            element html:div {
+                attribute class { "content" },
+                attribute id { "docmeta" },
+                element html:pre { common:format-triples($triples, $h1) } 
+            }
         }
     }
 };

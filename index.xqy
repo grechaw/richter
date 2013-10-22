@@ -32,6 +32,8 @@ import module namespace common = "http://superiorautomaticdictionary.com/ext/com
 declare namespace html="http://www.w3.org/1999/xhtml";
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
 
+declare variable $local:default-uri := "http://myomy";
+
 declare option xdmp:mapping "false";
 
 declare function local:app-rule() {
@@ -49,9 +51,9 @@ declare function local:html-page(
 ) as element(html:html)
 {
     let $q := map:get($params, "q")
-    let $title := map:get($params, "h1")
+    let $title := (map:get($params, "h1"), "Default")[1]
     let $docuri := map:get($params, "doc")
-    let $rdf-uri := map:get($params, "rdf-uri")
+    let $rdf-uri := (map:get($params, "rdf-uri"), $local:default-uri)[1]
     return
     <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
@@ -62,6 +64,8 @@ declare function local:html-page(
             <link rel="stylesheet" href="stylesheets/base.css"/>
             <link rel="stylesheet" href="stylesheets/skeleton.css"/>
             <link rel="stylesheet" href="stylesheets/layout.css"/>
+            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+            <script src="richter.js"></script>
         </head>
         <body>
             <div class="container">
@@ -70,45 +74,44 @@ declare function local:html-page(
                     <p>A MarkLogic-backed publishing system for some sort of <a href="?q=dictionary&amp;h1=Richter">dictionary</a> by Charles Greer</p>
                 </div>
 
-            <div class="ten columns alpha">
-        {
-            if ($title) 
-            then lib:doc-title($title) 
-            else if ($docuri)
-            then lib:doc($docuri)
-            else ( 
-                 <h3>What's New</h3>, 
-                 <img src="images/stoetz.jpg" id="bg"/>, 
-                 lib:latest())
-        }
-        </div>
+                <div id="header">
+                    <ul class="tabs">
+                        <li><a href="#latest">What's New</a></li>
+                        <li><a href="#article">{$title}</a></li>
+                        <li><a href="#docmeta">Article Metadata</a></li>
+                        <li><a href="#concordance">Concordance {$q}</a></li>
+                        <li><a href="#metadata">{sem:curie-shorten(sem:iri($rdf-uri), $common:mapping)}</a></li> 
+                        <li><a href="#terms">Terms</a></li> 
+                    </ul>
+                </div>
+                
+                <div id="latest" class="content">
+                    {lib:latest()}
+                </div>
 
-        <div class="six columns omega">
-        {
-            if ($q)
-            then
-                (
-                <h3>Hypertext "{$q}"</h3>,
-                lib:concordance($q)
-                )
-                else 
-                    if ($rdf-uri)
-                    then
-                        (
-                            <h3>{sem:curie-shorten(sem:iri($rdf-uri), $common:mapping)}</h3>, 
-                            lib:metadata($rdf-uri, ($title, "")[1])
-                        )
-                    else
-                        (
-                            <h3>Terms:</h3>, 
-                            lib:terms()
-                        )
-        }
+                {
+                    if ($docuri)
+                    then lib:doc($docuri)
+                    else lib:doc-title($title) 
+                }
+
+                <div id="concordance" class="content">
+                    <h3>Hypertext "{$q}"</h3>
+                    { lib:concordance($q) }
+                </div>
+
+                <div id="metadata" class="content">
+                    <h3>{sem:curie-shorten(sem:iri($rdf-uri), $common:mapping)}</h3>
+                    { lib:metadata($rdf-uri, ($title, "")[1]) }
+                </div>
+
+                <div id="terms" class="content">
+                    <h3>Terms:</h3>
+                    { lib:terms() }
+                </div>
         </div>
-    </div>
     </body>
 </html>
-
 };
 
 let $params := rest:process-request(local:app-rule())

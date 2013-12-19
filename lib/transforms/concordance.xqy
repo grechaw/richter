@@ -50,7 +50,7 @@ as document-node() {
                 (
                 element html:dt {
                     element html:a {
-                        attribute href { "?q="|| $qtext || "&amp;doc=" || $docuri  },
+                        attribute href { "?q="|| $qtext || "&amp;h1=" || $title  },
                         text {$title}
                     }
                 },
@@ -60,7 +60,7 @@ as document-node() {
                     return 
                         typeswitch ($node)
                             case element(search:highlight)
-                                return <html:a href="?q={$qtext}&amp;doc={$docuri}">{$node/text()}</html:a>
+                                return <html:a href="?q={$qtext}&amp;h1={$title}">{$node/text()}</html:a>
                             default return $node,
                     text {"..."}
                 }

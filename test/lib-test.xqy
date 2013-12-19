@@ -1,6 +1,7 @@
 xquery version "1.0-ml";
 module namespace test = "http://github.com/robwhitby/xray/test";
 declare namespace results = "http://www.w3.org/2005/sparql-results#";
+declare namespace html = "http://www.w3.org/1999/xhtml";
 
 import module namespace lib = "http://superiorautomaticdictionary.com/lib" at "../lib.xqy";
 import module namespace assert = "http://github.com/robwhitby/xray/assertions" at "/xray/src/assertions.xqy";
@@ -49,31 +50,19 @@ declare %test:case function test-latest()
 {
     let $post-future := post("test-post.xml")
     let $latest := lib:latest()
-    return assert:equal($latest, <x/>)
+    return assert:equal(node-name($latest), xs:QName("html:ul"))
 };
 
 declare %test:case function test-terms()
 {
     let $terms := lib:terms()
-    return assert:equal($terms, <x/>)
+    return assert:equal(($terms//html:li/html:a/string())[1], "architecture")
 };
 
-declare %test:case function test-sparql()
+
+declare %test:case function test-concordance()
 {
-    let $q := lib:do-sparql('select ?title where { :sparql dc:title ?title }')
-    return
-        assert:equal($q//results:literal, 
-            <literal datatype="http://www.w3.org/2001/XMLSchema#string" xmlns="http://www.w3.org/2005/sparql-results#">Stored Queries</literal>)
+    let $concordance := lib:concordance("architecture")
+    return assert:equal(($concordance//html:a/string())[1], "Requirements")
 };
 
-declare %test:case function test-new-post()
-{
-    (: fail :)
-    assert:equal(1, 2)
-};
-
-declare %test:case function test-reply()
-{
-    let $reply-link := lib:reply-link("TITLE")
-    return assert:equal($reply-link, "TITLE-Reply-1")
-};

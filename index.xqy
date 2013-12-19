@@ -50,8 +50,8 @@ declare function local:html-page(
     $params as map:map
 ) as element(html:html)
 {
-    let $q := map:get($params, "q")
-    let $title := (map:get($params, "h1"), "Default")[1]
+    let $q := (map:get($params, "q"),"dictionary")[1]
+    let $title := (map:get($params, "h1"), "Dictionary")[1]
     let $docuri := map:get($params, "doc")
     let $rdf-uri := (map:get($params, "rdf-uri"), $local:default-uri)[1]
     return
@@ -77,11 +77,11 @@ declare function local:html-page(
                 <div id="header">
                     <ul class="tabs">
                         <li><a href="#latest">What's New</a></li>
-                        <li><a href="#article">{$title}</a></li>
-                        <li><a href="#docmeta">Article Metadata</a></li>
-                        <li><a href="#concordance">Concordance {$q}</a></li>
-                        <li><a href="#metadata">{sem:curie-shorten(sem:iri($rdf-uri), $common:mapping)}</a></li> 
                         <li><a href="#terms">Terms</a></li> 
+                        <li><a href="#concordance">"{$q}"</a></li>
+                        <li><a href="#article"><em>{$title}</em></a></li>
+                        <li><a href="#metadata">{sem:curie-shorten(sem:iri($rdf-uri), $common:mapping)}</a></li> 
+                        <li><a href="#diagnostics">Diagnostics</a></li> 
                     </ul>
                 </div>
                 
@@ -89,25 +89,34 @@ declare function local:html-page(
                     {lib:latest()}
                 </div>
 
+                <div id="terms" class="content">
+                    { lib:terms() }
+                </div>
+
+                <div id="article" class="content">
                 {
                     if ($docuri)
                     then lib:doc($docuri)
                     else lib:doc-title($title) 
                 }
+                </div>
 
                 <div id="concordance" class="content">
-                    <h3>Hypertext "{$q}"</h3>
                     { lib:concordance($q) }
                 </div>
 
                 <div id="metadata" class="content">
-                    <h3>{sem:curie-shorten(sem:iri($rdf-uri), $common:mapping)}</h3>
                     { lib:metadata($rdf-uri, ($title, "")[1]) }
                 </div>
 
-                <div id="terms" class="content">
-                    <h3>Terms:</h3>
-                    { lib:terms() }
+
+                <div id="diagnostics" class="content">
+                <pre> 
+                    q: { map:get($params, "q") }
+                    h1: { (map:get($params, "h1"), "Default")[1] }
+                    doc-uri: { map:get($params, "doc") }
+                    rdf-uri: {(map:get($params, "rdf-uri"), $local:default-uri)[1]}
+                </pre>
                 </div>
         </div>
     </body>

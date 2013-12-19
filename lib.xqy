@@ -159,7 +159,7 @@ declare function lib:terms() {
     return 
     <ul xmlns="http://www.w3.org/1999/xhtml">
     {
-        for $result in $terms//search:distinct-value
+        for $result in $terms//search:distinct-value/string()
         return
             <li>
                 <a href="?q={encode-for-uri($result)}">
@@ -183,7 +183,7 @@ select ?title ?pubDate from <CURRENT>
         let $pubDate := $result//sr:binding[@name="pubDate"]/sr:literal/string()
         return
             <li>
-            <a href="?q={encode-for-uri($title)}&amp;h1={encode-for-uri($title)}">
+            <a href="#article?q={encode-for-uri($title)}&amp;h1={encode-for-uri($title)}">
                 {$pubDate}&nbsp;{$title} 
                 </a>
             </li>

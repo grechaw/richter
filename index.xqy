@@ -32,8 +32,6 @@ import module namespace common = "http://superiorautomaticdictionary.com/ext/com
 declare namespace html="http://www.w3.org/1999/xhtml";
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
 
-declare variable $local:default-uri := "http://myomy";
-
 declare option xdmp:mapping "false";
 
 declare function local:app-rule() {
@@ -52,8 +50,8 @@ declare function local:html-page(
 {
     let $q := (map:get($params, "q"),"dictionary")[1]
     let $title := (map:get($params, "h1"), "Dictionary")[1]
-    let $docuri := map:get($params, "doc")
-    let $rdf-uri := (map:get($params, "rdf-uri"), $local:default-uri)[1]
+    let $rdf-uri := (map:get($params, "rdf-uri"), "http://purl.org/dc/terms/title")[1]
+    let $tab := (map:get($params, "tab"), "latest")[1]
     return
     <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
@@ -68,10 +66,11 @@ declare function local:html-page(
             <script src="richter.js"></script>
         </head>
         <body>
+            <img src="images/zaliz-cover.jpg" id="bg"/>
             <div class="container">
                 <div class="sixteen columns">
                     <h1><a href="/">Richter</a></h1>
-                    <p>A MarkLogic-backed publishing system for some sort of <a href="?q=dictionary&amp;h1=Richter">dictionary</a> by Charles Greer</p>
+                    <p>by Charles Greer @grechaw</p>
                 </div>
 
                 <div id="header">
@@ -81,7 +80,6 @@ declare function local:html-page(
                         <li><a href="#concordance">"{$q}"</a></li>
                         <li><a href="#article"><em>{$title}</em></a></li>
                         <li><a href="#metadata">{sem:curie-shorten(sem:iri($rdf-uri), $common:mapping)}</a></li> 
-                        <li><a href="#diagnostics">Diagnostics</a></li> 
                     </ul>
                 </div>
                 
@@ -90,14 +88,12 @@ declare function local:html-page(
                 </div>
 
                 <div id="terms" class="content">
-                    { lib:terms() }
+                    { lib:terms($title) }
                 </div>
 
                 <div id="article" class="content">
                 {
-                    if ($docuri)
-                    then lib:doc($docuri)
-                    else lib:doc-title($title) 
+                    lib:doc-title($title) 
                 }
                 </div>
 
@@ -109,15 +105,6 @@ declare function local:html-page(
                     { lib:metadata($rdf-uri, ($title, "")[1]) }
                 </div>
 
-
-                <div id="diagnostics" class="content">
-                <pre> 
-                    q: { map:get($params, "q") }
-                    h1: { (map:get($params, "h1"), "Default")[1] }
-                    doc-uri: { map:get($params, "doc") }
-                    rdf-uri: {(map:get($params, "rdf-uri"), $local:default-uri)[1]}
-                </pre>
-                </div>
         </div>
     </body>
 </html>

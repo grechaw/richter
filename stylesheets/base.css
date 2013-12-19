@@ -94,7 +94,7 @@
 
 /* #Links
 ================================================== */
-	a, a:visited { color: #333; text-decoration: underline; outline: 0; }
+	a, a:visited { color: #339; text-decoration: none; outline: 0; }
 	a:hover, a:focus { color: #000; }
 	p a, p a:visited { line-height: inherit; }
 
@@ -286,30 +286,32 @@
 		margin: 0;
 	}
 	
-	#header li {
-		float: left;
-		border: 1px solid;
-		border-bottom-width: 0;
-		margin: 0 0.5em 0 0;
-	}
+#header li {
+	float: left;
+	border: 1px solid;
+	border-bottom-width: 0;
+    background: white;
+	margin: 0 0.5em 0 0;
+}
 	
-	#header a {
-		display: block;
-		padding: 0 1em;
-	}
-	
-	#header #selected {
-		position: relative;
-		top: 1px;
-		background: white;
-	}
-	
-	.content {
-		border: 1px solid;
-		clear: both;
-	}
-	
-	h1 {
-		margin: 0;
-		padding: 0 0 1em 0;
-	}
+#header a {
+    display: block;
+    padding: 0 1em;
+}
+
+#header #selected {
+    position: relative;
+    top: 1px;
+    background: white;
+}
+
+.content {
+    background: white;
+    border: 1px solid;
+    clear: both;
+}
+
+h1 {
+    margin: 0;
+    padding: 0 0 1em 0;
+}

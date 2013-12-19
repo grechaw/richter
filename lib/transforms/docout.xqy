@@ -43,21 +43,13 @@ declare function docout:decorate(
                     element html:h3 {
                         $n/@*,
                         element html:a {
-                            attribute href { "?q=" || encode-for-uri($n/text()/string()) || "&amp;h1=" || $n//text()/string()},
+                            attribute href { "?q=" || encode-for-uri($n/text()/string()) || "&amp;h1=" || $n//text()/string() || "&amp;tab=concordance" },
                             docout:decorate($n/node() except $n/@*)
                         }
                     }
-            case element(html:img)
-                return 
-                    if ($n/@id)
-                    then $n
-                    else element html:img {
-                        $n/@*,
-                        attribute id { "bg" }
-                    }
             case element(html:a)
                 return element html:a { 
-                    attribute href { "?q=" || encode-for-uri($n/text()/string()) || "&amp;h1=" || $n/preceding::html:h1/text()/string()},
+                    attribute href { "?q=" || encode-for-uri($n/text()/string()) || "&amp;h1=" || $n/preceding::html:h1/text()/string() || "&amp;tab=concordance"},
                     docout:decorate($n/node())}
             case element() 
                 return element {node-name($n)} {
@@ -88,7 +80,6 @@ declare function docout:transform(
     return document {
         element html:div {
             element html:div {
-                attribute class {"content"},
                 attribute id { "article" },
                 if (exists($decorated))
                 then
@@ -96,7 +87,7 @@ declare function docout:transform(
                         $decorated,
                         cts:word-query($termlist), 
                         element html:a {
-                            attribute href { "?q=" || encode-for-uri($cts:text) || "&amp;h1=" || $h1},
+                            attribute href { "?q=" || encode-for-uri($cts:text) || "&amp;h1=" || $h1 || "&amp;tab=concordance"},
                             $cts:text
                          })
                 else ()

@@ -1,7 +1,7 @@
 <post>
     <turtle><![CDATA[
         :onto a meta:Post ;
-          dc:title "The Ontology" ;
+          dc:title "Ontology" ;
           dc:creator meta:me ;
           dc:subject t:ontology ;
           dc:issued "2013-05-15"^^xs:date ;

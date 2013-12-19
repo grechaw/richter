@@ -1,4 +1,11 @@
 /* credit to http://www.jacklmoore.com/notes/jquery-tabs/ */
+
+var x = function getTabParameter() {
+    var regex = new RegExp("[\\?&]tab=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : '#' + decodeURIComponent(results[1].replace(/\+/g, " "));
+};
+
 $(document).ready(function(){
     $('ul.tabs').each(function(){
         // For each set of tabs, we want to keep track of
@@ -7,7 +14,7 @@ $(document).ready(function(){
 
         // If the location.hash matches one of the links, use that as the active tab.
         // If no match is found, use the first link as the initial active tab.
-        $active = $($links.filter('[href="'+location.hash+'"]')[0] || $links[0]);
+        $active = $($links.filter('[href="'+x()+'"]')[0] || $links[0]);
         $active.addClass('active');
         $content = $($active.attr('href'));
 

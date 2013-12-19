@@ -138,7 +138,7 @@ declare function lib:metadata($rdf-uri as xs:string, $h1)
         return common:format-triples($rdf/*, $h1)
 };
 
-declare function lib:terms() {
+declare function lib:terms($h1) {
     let $terms := lib:do-http("POST", 
         $values-uri || '/terms',
         <search xmlns="http://marklogic.com/appservices/search">
@@ -162,7 +162,7 @@ declare function lib:terms() {
         for $result in $terms//search:distinct-value/string()
         return
             <li>
-                <a href="?q={encode-for-uri($result)}">
+                <a href="?q={encode-for-uri($result)}&amp;h1={encode-for-uri($h1)}&amp;tab=concordance">
                     {$result}
                 </a>
             </li>
@@ -183,7 +183,7 @@ select ?title ?pubDate from <CURRENT>
         let $pubDate := $result//sr:binding[@name="pubDate"]/sr:literal/string()
         return
             <li>
-            <a href="#article?q={encode-for-uri($title)}&amp;h1={encode-for-uri($title)}">
+            <a href="?q={encode-for-uri($title)}&amp;h1={encode-for-uri($title)}&amp;tab=article">
                 {$pubDate}&nbsp;{$title} 
                 </a>
             </li>
@@ -191,10 +191,6 @@ select ?title ?pubDate from <CURRENT>
     </ul>
 };
 
-
-declare function lib:doc($docuri) {
-    lib:do-http("GET", concat($docs-uri, "?uri=", encode-for-uri($docuri), "&amp;transform=docout"))
-};
 
 declare function lib:doc-title($title) {
     let $doc := lib:do-http("POST", 

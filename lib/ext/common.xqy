@@ -25,6 +25,8 @@ declare namespace search="http://marklogic.com/appservices/search";
 
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
 
+
+
 declare variable $common:mapping := map:new((
   map:entry("cc", "http://creativecommons.org/ns#"),
   map:entry("dc", "http://purl.org/dc/terms/"),
@@ -44,6 +46,36 @@ declare variable $common:mapping := map:new((
 
 declare variable $common:collation := "http://marklogic.com/collation/en/S1/T00BB/AS";
 (: given triple XML and a title, make HTML representation :)
+
+declare private function common:make-href(
+    $h1 as xs:string,
+    $t as sem:triple,
+    $accessor as function(*),
+    $tab as xs:string
+) as attribute(href)
+{
+    attribute href { 
+        concat("?rdf-uri=", 
+        encode-for-uri($accessor($t)), 
+        "&amp;h1=", 
+        $h1,
+        "&amp;tab=",
+        $tab) 
+    }
+};
+
+declare private function common:make-anchor(
+    $h1 as xs:string,
+    $t as sem:triple,
+    $accessor as function(*)
+) as element(html:a)
+{
+    element html:a {
+        common:make-href($h1, $t, $accessor, "metadata"),
+        text {sem:curie-shorten($accessor($t), $common:mapping)}
+    }
+};
+
 declare function common:format-triples($triples, $h1) 
 {
     element html:div {
@@ -58,28 +90,20 @@ declare function common:format-triples($triples, $h1)
                     if ($subjects eq 1 and $index gt 1)
                     then 
                         "&nbsp;&nbsp;"
-                    else
-                        element html:a {
-                            attribute href { concat("?rdf-uri=", encode-for-uri($triple/sem:subject), "&amp;h1=", $h1) },
-                            text { sem:curie-shorten($triple/sem:subject, $common:mapping) }
-                        },
+                    else common:make-anchor($h1, $t, sem:triple-subject#1),
                     text {" "},
                     element html:a {
-                        attribute href { concat("?rdf-uri=", encode-for-uri($triple/sem:predicate), "&amp;h1=", $h1) },
+                        attribute href { concat("?rdf-uri=", encode-for-uri($triple/sem:predicate), "&amp;h1=", $h1, "&amp;tab=metadata") },
                         text {sem:curie-shorten($triple/sem:predicate, $common:mapping)}
                     },
                     text { " " },
                     if (sem:triple-object($t) instance of sem:iri)
-                    then 
-                        element html:a {
-                            attribute href { concat("?rdf-uri=", encode-for-uri(sem:triple-object($t)), "&amp;h1=", $h1) },
-                            text {sem:curie-shorten(sem:triple-object($t), $common:mapping)}
-                        }
-                        else 
-                            text {concat('"', $triple/sem:object/string(), '"') },
+                    then common:make-anchor($h1, $t, sem:triple-object#1)
+                    else text {concat('"', $triple/sem:object/string(), '"') },
                     text { ".  " },
                     element html:a {
-                        attribute href { concat("?rdf-uri=", encode-for-uri($triple/sem:subject), "&amp;h1=", encode-for-uri($triple/sem:subject)) },
+                        common:make-href(encode-for-uri(
+                            replace(sem:triple-subject($t),"http://superiorautomaticdictionary.com/posts/", "")), $t, sem:triple-subject#1, "article"),
                         text { "->" }
                     },
                     text {"&#10;" }
